@@ -16,17 +16,19 @@ namespace Player.MovementStates
 
         public override void Update()
         {
-            if (Mathf.Abs(Player.Input.MoveInput.x) > Mathf.Epsilon)
-            {
-                FSM.ChangeState(Player.MoveState);
-            }
-            else if (Player.CanJumpCoyote() && Player.Input.IsJumpActive())
+            if (Player.Input.IsJumpActive() && Player.CanJumpCoyote())
             {
                 FSM.ChangeState(Player.JumpState);
             }
-            else if (Player.CanClimb && Mathf.Abs(Player.Input.MoveInput.y) > Mathf.Epsilon)
+            else if (Mathf.Abs(Player.Input.MoveInput.x) > Mathf.Epsilon)
             {
-                if ((Player.IsGrounded() && Player.Input.MoveInput.y > Mathf.Epsilon) || !Player.IsGrounded())
+                FSM.ChangeState(Player.MoveState);
+            }
+            else if (Player.CanClimb())
+            {
+                var moveY = Player.Input.MoveInput.y;
+                var isGrounded = Player.IsGrounded();
+                if (Mathf.Abs(moveY) > Mathf.Epsilon && (!isGrounded || moveY > Mathf.Epsilon))
                 {
                     FSM.ChangeState(Player.ClimbState);
                 }

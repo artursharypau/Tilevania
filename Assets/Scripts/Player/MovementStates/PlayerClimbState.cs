@@ -30,9 +30,9 @@ namespace Player.MovementStates
             if (Player.Input.IsJumpActive())
             {
                 FSM.ChangeState(Player.JumpState);
+                Player.BlockClimbTemporary();
             }
-
-            if (!Player.CanClimb || Player.IsGrounded())
+            else if (!Player.CanClimb() || Player.IsGrounded())
             {
                 if (Mathf.Abs(Player.Input.MoveInput.x) > Mathf.Epsilon)
                 {

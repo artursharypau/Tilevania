@@ -37124,8 +37124,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4775568633384816489, guid: 5851c122ccee449d88d795d3b1599d9f, type: 3}
+      propertyPath: _jumpForce
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775568633384816489, guid: 5851c122ccee449d88d795d3b1599d9f, type: 3}
       propertyPath: _climbSpeed
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775568633384816489, guid: 5851c122ccee449d88d795d3b1599d9f, type: 3}
+      propertyPath: _climbBlockTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4892921351528477136, guid: 5851c122ccee449d88d795d3b1599d9f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.037
+      objectReference: {fileID: 0}
+    - target: {fileID: 4892921351528477136, guid: 5851c122ccee449d88d795d3b1599d9f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.397
       objectReference: {fileID: 0}
     - target: {fileID: 5270804568738885631, guid: 5851c122ccee449d88d795d3b1599d9f, type: 3}
       propertyPath: m_LocalPosition.x

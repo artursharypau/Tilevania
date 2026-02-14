@@ -6,23 +6,29 @@ namespace Player
     public class PlayerController : MonoBehaviour
     {
         [SerializeField] private float _moveSpeed = 10f;
-        [SerializeField] private float _climbSpeed = 5f;
+
         [SerializeField] private float _jumpForce = 10f;
         [SerializeField] private ushort _availableJumpCount = 2;
         [SerializeField] private float _coyoteJumpTime = 0.2f;
+
+        [SerializeField] private float _climbSpeed = 5f;
+        [SerializeField] private float _climbBlockTime = 1f;
+
         [SerializeField] private Transform _groundCheck;
-        [SerializeField] private float _groundCheckRadius = 0.1f;
+        [SerializeField] private float _groundCheckRadius = Mathf.Epsilon;
+
+        private bool _canClimb;
+        private float _lastClimbTime;
+        private LayerMask _climbingLayerMask;
 
         private float _lastGroundedTime;
         private LayerMask _groundLayerMask;
-        private LayerMask _climbingLayerMask;
 
         public float MoveSpeed => _moveSpeed;
         public float ClimbSpeed => _climbSpeed;
         public float JumpForce => _jumpForce;
         public ushort AvailableJumpCount => _availableJumpCount;
 
-        public bool CanClimb { get; private set; }
         public Rigidbody2D RB { get; private set; }
         public Animator Anim { get; private set; }
         public PlayerInputHandler Input { get; private set; }
@@ -35,8 +41,8 @@ namespace Player
 
         private void Awake()
         {
-            _groundLayerMask = LayerMask.GetMask("Ground");
             _climbingLayerMask = LayerMask.GetMask("Climbing");
+            _groundLayerMask = LayerMask.GetMask("Ground");
 
             RB = GetComponent<Rigidbody2D>();
             Anim = GetComponent<Animator>();
@@ -56,6 +62,11 @@ namespace Player
         private void Update()
         {
             MovementFSM.Update();
+        }
+
+        private void FixedUpdate()
+        {
+            MovementFSM.FixedUpdate();
 
             if (IsGrounded())
             {
@@ -63,16 +74,11 @@ namespace Player
             }
         }
 
-        private void FixedUpdate()
-        {
-            MovementFSM.FixedUpdate();
-        }
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             if ((_climbingLayerMask & (1 << other.gameObject.layer)) != 0)
             {
-                CanClimb = true;
+                _canClimb = true;
             }
         }
 
@@ -80,7 +86,7 @@ namespace Player
         {
             if ((_climbingLayerMask & (1 << other.gameObject.layer)) != 0)
             {
-                CanClimb = false;
+                _canClimb = false;
             }
         }
 
@@ -90,16 +96,26 @@ namespace Player
             Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
         }
 
-        public bool IsGrounded()
-        {
-            return Mathf.Abs(RB.linearVelocity.y) > Mathf.Epsilon
-                ? false
-                : Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayerMask);
-        }
-
         public bool CanJumpCoyote()
         {
             return Time.time < _lastGroundedTime + _coyoteJumpTime;
+        }
+
+        public bool CanClimb()
+        {
+            return _canClimb && Time.time > _lastClimbTime + _climbBlockTime;
+        }
+
+        public void BlockClimbTemporary()
+        {
+            _lastClimbTime = Time.time;
+        }
+
+        public bool IsGrounded()
+        {
+            return Mathf.Abs(RB.linearVelocity.y) > 0.1f
+                ? false
+                : Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayerMask);
         }
     }
 }

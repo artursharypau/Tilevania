@@ -31,18 +31,20 @@ namespace Player.MovementStates
 
             if (Player.IsGrounded())
             {
-                if (Mathf.Abs(Player.Input.MoveInput.x) < Mathf.Epsilon)
-                {
-                    FSM.ChangeState(Player.IdleState);
-                }
-                else
+                if (Mathf.Abs(Player.Input.MoveInput.x) > Mathf.Epsilon)
                 {
                     FSM.ChangeState(Player.MoveState);
                 }
+                else
+                {
+                    FSM.ChangeState(Player.IdleState);
+                }
             }
-            else if (Player.CanClimb && Mathf.Abs(Player.Input.MoveInput.y) > Mathf.Epsilon)
+            else if (Player.CanClimb())
             {
-                if ((Player.IsGrounded() && Player.Input.MoveInput.y > Mathf.Epsilon) || !Player.IsGrounded())
+                var moveY = Player.Input.MoveInput.y;
+                var isGrounded = Player.IsGrounded();
+                if (Mathf.Abs(moveY) > Mathf.Epsilon && (!isGrounded || moveY > Mathf.Epsilon))
                 {
                     FSM.ChangeState(Player.ClimbState);
                 }
