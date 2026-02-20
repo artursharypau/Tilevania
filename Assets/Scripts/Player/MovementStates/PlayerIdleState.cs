@@ -26,8 +26,8 @@ namespace Player.MovementStates
             }
             else if (Player.CanClimb())
             {
-                var moveY = Player.Input.MoveInput.y;
-                var isGrounded = Player.IsGrounded();
+                float moveY = Player.Input.MoveInput.y;
+                bool isGrounded = Player.IsGrounded();
                 if (Mathf.Abs(moveY) > Mathf.Epsilon && (!isGrounded || moveY > Mathf.Epsilon))
                 {
                     FSM.ChangeState(Player.ClimbState);

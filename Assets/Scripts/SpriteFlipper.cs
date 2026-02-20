@@ -18,10 +18,10 @@ public class SpriteFlipper
             return;
         }
 
-        var shouldFaceRight = moveInputX > Mathf.Epsilon;
+        bool shouldFaceRight = moveInputX > Mathf.Epsilon;
         if (shouldFaceRight != _isFacingRight)
         {
-            var scale = transform.localScale;
+            Vector3 scale = transform.localScale;
             scale.x = shouldFaceRight ? _initialAbsScaleX : -_initialAbsScaleX;
             transform.localScale = scale;
 

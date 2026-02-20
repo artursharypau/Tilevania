@@ -1,5 +1,6 @@
 using Player.MovementStates;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Player
 {
@@ -13,11 +14,11 @@ namespace Player
 
         [SerializeField] private float _climbSpeed = 5f;
         [SerializeField] private float _climbBlockTime = 1f;
+        [SerializeField] private Tilemap _climbingTilemap;
 
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private float _groundCheckRadius = Mathf.Epsilon;
 
-        private bool _canClimb;
         private float _lastClimbTime;
         private LayerMask _climbingLayerMask;
 
@@ -28,6 +29,7 @@ namespace Player
         public float ClimbSpeed => _climbSpeed;
         public float JumpForce => _jumpForce;
         public ushort AvailableJumpCount => _availableJumpCount;
+        public Vector2 CurrentClimbPosition { get; private set; } = Vector3.zero;
 
         public Rigidbody2D RB { get; private set; }
         public Animator Anim { get; private set; }
@@ -48,7 +50,7 @@ namespace Player
             Anim = GetComponent<Animator>();
             Input = GetComponent<PlayerInputHandler>();
 
-            var spriteFlipper = new SpriteFlipper(transform.localScale.x);
+            SpriteFlipper spriteFlipper = new(transform.localScale.x);
 
             MovementFSM = new PlayerStateMachine();
             IdleState = new PlayerIdleState(MovementFSM, this);
@@ -78,7 +80,8 @@ namespace Player
         {
             if ((_climbingLayerMask & (1 << other.gameObject.layer)) != 0)
             {
-                _canClimb = true;
+                Vector3Int cellPosition = _climbingTilemap.WorldToCell(transform.position);
+                CurrentClimbPosition = _climbingTilemap.GetCellCenterWorld(cellPosition);
             }
         }
 
@@ -86,7 +89,7 @@ namespace Player
         {
             if ((_climbingLayerMask & (1 << other.gameObject.layer)) != 0)
             {
-                _canClimb = false;
+                CurrentClimbPosition = Vector2.zero;
             }
         }
 
@@ -103,7 +106,7 @@ namespace Player
 
         public bool CanClimb()
         {
-            return _canClimb && Time.time > _lastClimbTime + _climbBlockTime;
+            return CurrentClimbPosition != Vector2.zero && Time.time > _lastClimbTime + _climbBlockTime;
         }
 
         public void BlockClimbTemporary()

@@ -19,6 +19,8 @@ namespace Player.MovementStates
         {
             _gravityScale = Player.RB.gravityScale;
             _climbAnimSpeed = Player.Anim.GetFloat(ClimbAnimSpeed);
+
+            Player.transform.position = new Vector3(Player.CurrentClimbPosition.x, Player.transform.position.y);
             Player.RB.gravityScale = 0;
             Player.Anim.SetBool(IsClimbing, true);
         }
@@ -32,16 +34,9 @@ namespace Player.MovementStates
                 FSM.ChangeState(Player.JumpState);
                 Player.BlockClimbTemporary();
             }
-            else if (!Player.CanClimb() || Player.IsGrounded())
+            else if (!Player.CanClimb() || (Player.IsGrounded() && Player.Input.MoveInput.y < -Mathf.Epsilon))
             {
-                if (Mathf.Abs(Player.Input.MoveInput.x) > Mathf.Epsilon)
-                {
-                    FSM.ChangeState(Player.MoveState);
-                }
-                else
-                {
-                    FSM.ChangeState(Player.IdleState);
-                }
+                FSM.ChangeState(Player.IdleState);
             }
         }
 
