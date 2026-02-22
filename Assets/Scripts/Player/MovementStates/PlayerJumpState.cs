@@ -4,7 +4,7 @@ namespace Player.MovementStates
 {
     public class PlayerJumpState : PlayerState
     {
-        private static readonly int IsMoving = Animator.StringToHash("IsMoving");
+        private static readonly int IsRunning = Animator.StringToHash("IsRunning");
 
         private readonly SpriteFlipper _spriteFlipper;
 
@@ -19,7 +19,7 @@ namespace Player.MovementStates
         public override void Enter()
         {
             Jump();
-            Player.Anim.SetBool(IsMoving, true);
+            Player.Anim.SetBool(IsRunning, true);
         }
 
         public override void Update()
@@ -33,7 +33,7 @@ namespace Player.MovementStates
             {
                 if (Mathf.Abs(Player.Input.MoveInput.x) > Mathf.Epsilon)
                 {
-                    FSM.ChangeState(Player.MoveState);
+                    FSM.ChangeState(Player.RunState);
                 }
                 else
                 {
@@ -55,14 +55,14 @@ namespace Player.MovementStates
 
         public override void FixedUpdate()
         {
-            Player.RB.linearVelocityX = Player.Input.MoveInput.x * Player.MoveSpeed;
+            Player.RB.linearVelocityX = Player.Input.MoveInput.x * Player.RunSpeed;
         }
 
         public override void Exit()
         {
             _jumpCount = 0;
             Player.Input.ConsumeJump();
-            Player.Anim.SetBool(IsMoving, false);
+            Player.Anim.SetBool(IsRunning, false);
         }
 
         private void Jump()

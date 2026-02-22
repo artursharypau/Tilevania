@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4892921351528477136}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,8 @@ GameObject:
   - component: {fileID: 829568132265377353}
   - component: {fileID: 7475611901849352742}
   - component: {fileID: 4775568633384816489}
-  m_Layer: 0
+  - component: {fileID: 7946556303183531102}
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,8 +116,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -38817405
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7894484093430313499, guid: 73b2b4d1bc422486bb7e0b6c6f0c49a3, type: 3}
@@ -212,8 +213,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.03508377, y: -0.116375685}
-  m_Size: {x: 0.40859413, y: 0.75160646}
+  m_Offset: {x: -0.053788185, y: -0.06144142}
+  m_Size: {x: 0.62786865, y: 0.861475}
   m_Direction: 0
 --- !u!114 &829568132265377353
 MonoBehaviour:
@@ -370,12 +371,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d99a12ff67d47ae924e0e5d91f5a47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _moveSpeed: 10
-  _jumpForce: 10
+  _runSpeed: 10
+  _jumpForce: 8
   _availableJumpCount: 2
   _coyoteJumpTime: 0.2
   _climbSpeed: 5
   _climbBlockTime: 1
+  _climbingTilemap: {fileID: 0}
   _groundCheck: {fileID: 4892921351528477136}
   _groundCheckRadius: 0.1
-  _climbingTilemap: {fileID: 0}
+--- !u!114 &7946556303183531102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8865585464516351687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce934881f65408facf107dac366a723, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.HealthController

@@ -22,7 +22,7 @@ namespace Player.MovementStates
             }
             else if (Mathf.Abs(Player.Input.MoveInput.x) > Mathf.Epsilon)
             {
-                FSM.ChangeState(Player.MoveState);
+                FSM.ChangeState(Player.RunState);
             }
             else if (Player.CanClimb())
             {

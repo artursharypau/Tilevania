@@ -6,26 +6,23 @@ namespace Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private float _moveSpeed = 10f;
-
+        [SerializeField] private float _runSpeed = 10f;
         [SerializeField] private float _jumpForce = 10f;
         [SerializeField] private ushort _availableJumpCount = 2;
         [SerializeField] private float _coyoteJumpTime = 0.2f;
-
         [SerializeField] private float _climbSpeed = 5f;
         [SerializeField] private float _climbBlockTime = 1f;
         [SerializeField] private Tilemap _climbingTilemap;
-
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private float _groundCheckRadius = Mathf.Epsilon;
 
         private float _lastClimbTime;
         private LayerMask _climbingLayerMask;
-
         private float _lastGroundedTime;
         private LayerMask _groundLayerMask;
+        private HealthController _healthController;
 
-        public float MoveSpeed => _moveSpeed;
+        public float RunSpeed => _runSpeed;
         public float ClimbSpeed => _climbSpeed;
         public float JumpForce => _jumpForce;
         public ushort AvailableJumpCount => _availableJumpCount;
@@ -37,14 +34,15 @@ namespace Player
 
         public PlayerStateMachine MovementFSM { get; private set; }
         public PlayerIdleState IdleState { get; private set; }
-        public PlayerMoveState MoveState { get; private set; }
+        public PlayerRunState RunState { get; private set; }
         public PlayerJumpState JumpState { get; private set; }
         public PlayerClimbState ClimbState { get; private set; }
 
         private void Awake()
         {
             _climbingLayerMask = LayerMask.GetMask("Climbing");
-            _groundLayerMask = LayerMask.GetMask("Ground");
+            _groundLayerMask = LayerMask.GetMask("Ground", "Bouncing");
+            _healthController = GetComponent<HealthController>();
 
             RB = GetComponent<Rigidbody2D>();
             Anim = GetComponent<Animator>();
@@ -54,7 +52,7 @@ namespace Player
 
             MovementFSM = new PlayerStateMachine();
             IdleState = new PlayerIdleState(MovementFSM, this);
-            MoveState = new PlayerMoveState(MovementFSM, this, spriteFlipper);
+            RunState = new PlayerRunState(MovementFSM, this, spriteFlipper);
             JumpState = new PlayerJumpState(MovementFSM, this, spriteFlipper);
             ClimbState = new PlayerClimbState(MovementFSM, this);
 

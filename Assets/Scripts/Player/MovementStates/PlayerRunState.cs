@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace Player.MovementStates
 {
-    public class PlayerMoveState : PlayerState
+    public class PlayerRunState : PlayerState
     {
-        private static readonly int IsMoving = Animator.StringToHash("IsMoving");
+        private static readonly int IsRunning = Animator.StringToHash("IsRunning");
 
         private readonly SpriteFlipper _spriteFlipper;
 
-        public PlayerMoveState(PlayerStateMachine fsm, PlayerController player, SpriteFlipper spriteFlipper)
+        public PlayerRunState(PlayerStateMachine fsm, PlayerController player, SpriteFlipper spriteFlipper)
             : base(fsm, player)
         {
             _spriteFlipper = spriteFlipper;
@@ -16,7 +16,7 @@ namespace Player.MovementStates
 
         public override void Enter()
         {
-            Player.Anim.SetBool(IsMoving, true);
+            Player.Anim.SetBool(IsRunning, true);
         }
 
         public override void Update()
@@ -44,12 +44,12 @@ namespace Player.MovementStates
 
         public override void FixedUpdate()
         {
-            Player.RB.linearVelocityX = Player.Input.MoveInput.x * Player.MoveSpeed;
+            Player.RB.linearVelocityX = Player.Input.MoveInput.x * Player.RunSpeed;
         }
 
         public override void Exit()
         {
-            Player.Anim.SetBool(IsMoving, false);
+            Player.Anim.SetBool(IsRunning, false);
         }
     }
 }

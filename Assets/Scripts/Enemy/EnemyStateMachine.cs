@@ -1,16 +1,16 @@
-namespace Player
+namespace Enemy
 {
-    public class PlayerStateMachine
+    public class EnemyStateMachine
     {
-        public PlayerState Current { get; private set; }
+        public EnemyState Current { get; private set; }
 
-        public void Initialize(PlayerState baseState)
+        public void Initialize(EnemyState baseState)
         {
             Current = baseState;
             Current.Enter();
         }
 
-        public void ChangeState(PlayerState newState)
+        public void ChangeState(EnemyState newState)
         {
             if (Current == newState)
             {
