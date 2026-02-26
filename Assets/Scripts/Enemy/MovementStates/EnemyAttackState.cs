@@ -6,15 +6,25 @@ namespace Enemy.MovementStates
     {
         private static readonly int Attacking = Animator.StringToHash("Attacking");
 
+        private readonly SpriteFlipper _spriteFlipper;
+
         private float _nextAttackTime;
 
-        public EnemyAttackState(EnemyStateMachine fsm, EnemyController enemy)
+        public EnemyAttackState(EnemyStateMachine fsm, EnemyController enemy, SpriteFlipper spriteFlipper)
             : base(fsm, enemy)
         {
+            _spriteFlipper = spriteFlipper;
         }
 
         public override void Enter()
         {
+            float playerDirectionX = Enemy.CurrentTarget.transform.position.x - Enemy.transform.position.x;
+            if ((Enemy.IsFacingRight() && playerDirectionX < 0)
+                || (!Enemy.IsFacingRight() && playerDirectionX > 0))
+            {
+                _spriteFlipper.CheckFlip(-Enemy.transform.localScale.x, Enemy.transform);
+            }
+
             Attack();
         }
 
@@ -35,7 +45,7 @@ namespace Enemy.MovementStates
         private void Attack()
         {
             Enemy.Anim.Play(Attacking);
-            Enemy.CurrentTarget.TakeDamage();
+            Enemy.CurrentTarget.TakeDamage(1, Enemy.transform.position);
             _nextAttackTime = Time.time + Enemy.AttackCooldown;
         }
     }

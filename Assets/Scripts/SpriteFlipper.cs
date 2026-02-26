@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class SpriteFlipper
 {
-    private readonly float _initialAbsScaleX;
     private bool _isFacingRight;
 
     public SpriteFlipper(float initialScaleX)
     {
-        _initialAbsScaleX = Mathf.Abs(initialScaleX);
         _isFacingRight = initialScaleX > 0;
     }
 
@@ -21,9 +19,8 @@ public class SpriteFlipper
         bool shouldFaceRight = moveInputX > Mathf.Epsilon;
         if (shouldFaceRight != _isFacingRight)
         {
-            Vector3 scale = transform.localScale;
-            scale.x = shouldFaceRight ? _initialAbsScaleX : -_initialAbsScaleX;
-            transform.localScale = scale;
+            float targetScaleX = Mathf.Abs(transform.localScale.x);
+            transform.localScale = new Vector2(shouldFaceRight ? targetScaleX : -targetScaleX, transform.localScale.y);
 
             _isFacingRight = shouldFaceRight;
         }

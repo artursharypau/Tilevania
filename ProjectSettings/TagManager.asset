@@ -16,8 +16,8 @@ TagManager:
   - Bouncing
   - Enemy
   - Player
-  - 
-  - 
+  - DeadPlayer
+  - Bullet
   - 
   - 
   - 

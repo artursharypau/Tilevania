@@ -25,7 +25,38 @@ Transform:
   m_GameObject: {fileID: 366189975916703275}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.037, y: -0.397, z: 0}
+  m_LocalPosition: {x: -0.051, y: -0.408, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5270804568738885631}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2692369802055523508
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5524998985830753795}
+  m_Layer: 10
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5524998985830753795
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2692369802055523508}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.199, y: -0.176, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -48,6 +79,7 @@ GameObject:
   - component: {fileID: 7475611901849352742}
   - component: {fileID: 4775568633384816489}
   - component: {fileID: 7946556303183531102}
+  - component: {fileID: 8709521639173146341}
   m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
@@ -69,6 +101,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4892921351528477136}
+  - {fileID: 5524998985830753795}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7783071227858570850
@@ -118,7 +151,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -38817405
   m_SortingLayer: 6
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7894484093430313499, guid: 73b2b4d1bc422486bb7e0b6c6f0c49a3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -189,7 +222,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 72865384413674946a2ec00dfe84236a, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -213,8 +246,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.053788185, y: -0.06144142}
-  m_Size: {x: 0.62786865, y: 0.861475}
+  m_Offset: {x: -0.053788185, y: -0.0661993}
+  m_Size: {x: 0.62786865, y: 0.87099075}
   m_Direction: 0
 --- !u!114 &829568132265377353
 MonoBehaviour:
@@ -262,7 +295,19 @@ MonoBehaviour:
     m_ActionId: 6b444451-8a00-4d00-a97e-f47457f736a8
     m_ActionName: 'Player/Look[/Mouse/delta,/Pen/delta]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7475611901849352742}
+        m_TargetAssemblyTypeName: Player.PlayerInputHandler, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
     m_ActionName: 'Player/Attack[/Mouse/leftButton,/Keyboard/enter]'
   - m_PersistentCalls:
@@ -371,7 +416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d99a12ff67d47ae924e0e5d91f5a47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _runSpeed: 10
+  _runSpeed: 8
   _jumpForce: 8
   _availableJumpCount: 2
   _coyoteJumpTime: 0.2
@@ -380,6 +425,7 @@ MonoBehaviour:
   _climbingTilemap: {fileID: 0}
   _groundCheck: {fileID: 4892921351528477136}
   _groundCheckRadius: 0.1
+  _deathKick: {x: 3, y: 7}
 --- !u!114 &7946556303183531102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,3 +438,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ce934881f65408facf107dac366a723, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.HealthController
+--- !u!114 &8709521639173146341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8865585464516351687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc1cd6b82a114622b8856f5efa6512d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.BulletController
+  _fireCooldown: 0.5
+  _firePoint: {fileID: 5524998985830753795}
+  _bullet: {fileID: 778721317333576612, guid: 978e041f7ee544a5ab6d0a6003636b28, type: 3}

@@ -34,17 +34,19 @@ namespace Enemy
 
         private void Awake()
         {
-            _playerLayerMask = LayerMask.GetMask("Player");
+            _playerLayerMask = LayerMask.GetMask("Player", "DeadPlayer");
 
             ShouldAttack = false;
             GroundLayerMask = LayerMask.GetMask("Ground", "Bouncing");
             RB = GetComponent<Rigidbody2D>();
             Anim = GetComponent<Animator>();
 
+            SpriteFlipper spriteFlipper = new(transform.localScale.x);
+
             MovementFsm = new EnemyStateMachine();
-            IdleState = new EnemyIdleState(MovementFsm, this, new SpriteFlipper(transform.localScale.x));
+            IdleState = new EnemyIdleState(MovementFsm, this, spriteFlipper);
             RunState = new EnemyRunState(MovementFsm, this);
-            AttackState = new EnemyAttackState(MovementFsm, this);
+            AttackState = new EnemyAttackState(MovementFsm, this, spriteFlipper);
         }
 
         private void Start()
