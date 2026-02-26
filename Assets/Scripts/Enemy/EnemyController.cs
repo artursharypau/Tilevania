@@ -11,8 +11,11 @@ namespace Enemy
         [SerializeField] private float _rayDistance = 0.5f;
         [SerializeField] private Transform _ledgeCheck;
         [SerializeField] private float _attackCooldown = 1f;
+        [SerializeField] private ushort _healthPoints = 3;
+        [SerializeField] private ParticleSystem _bloodParticles;
 
         private LayerMask _playerLayerMask;
+        private LayerMask _bulletLayerMask;
 
         public float IdleTime => _idleTime;
         public float RunSpeed => _runSpeed;
@@ -35,6 +38,7 @@ namespace Enemy
         private void Awake()
         {
             _playerLayerMask = LayerMask.GetMask("Player", "DeadPlayer");
+            _bulletLayerMask = LayerMask.GetMask("Bullet");
 
             ShouldAttack = false;
             GroundLayerMask = LayerMask.GetMask("Ground", "Bouncing");
@@ -79,6 +83,22 @@ namespace Enemy
             {
                 ShouldAttack = false;
                 CurrentTarget = null;
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            if ((_bulletLayerMask & (1 << other.gameObject.layer)) != 0)
+            {
+                --_healthPoints;
+                _bloodParticles.Play(true);
+
+                if (_healthPoints == 0)
+                {
+                    enabled = false;
+
+                    Destroy(gameObject, _bloodParticles.main.duration);
+                }
             }
         }
 

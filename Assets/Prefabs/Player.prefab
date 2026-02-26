@@ -404,6 +404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerInputHandler
   _jumpBufferTime: 0.2
+  _attackBufferTime: 0.8
 --- !u!114 &4775568633384816489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,4 +453,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player.BulletController
   _fireCooldown: 0.5
   _firePoint: {fileID: 5524998985830753795}
-  _bullet: {fileID: 778721317333576612, guid: 978e041f7ee544a5ab6d0a6003636b28, type: 3}
+  _initialPoolSize: 10
+  _bulletsContainer: {fileID: 0}
+  _bullet: {fileID: 6310658664811468817, guid: 978e041f7ee544a5ab6d0a6003636b28, type: 3}

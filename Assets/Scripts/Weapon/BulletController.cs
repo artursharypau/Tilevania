@@ -6,9 +6,9 @@ namespace Weapon
 {
     public class BulletController : MonoBehaviour
     {
-        [SerializeField] private float _fireCooldown = 0.3f;
+        [SerializeField] private float _fireCooldown = 0.5f;
         [SerializeField] private Transform _firePoint;
-        [SerializeField] private ushort _poolSize = 10;
+        [SerializeField] private ushort _initialPoolSize = 10;
         [SerializeField] private GameObject _bulletsContainer;
         [SerializeField] private Bullet _bullet;
 
@@ -21,10 +21,10 @@ namespace Weapon
         private void Awake()
         {
             _current = 0;
-            _bulletsPool = new List<Bullet>(_poolSize);
+            _bulletsPool = new List<Bullet>(_initialPoolSize);
             _cooldownRoutine = new WaitForSeconds(_fireCooldown);
 
-            for (int i = 0; i < _poolSize; i++)
+            for (int i = 0; i < _initialPoolSize; i++)
             {
                 Bullet bullet = Instantiate(_bullet, _bulletsContainer.transform, true);
                 bullet.gameObject.SetActive(false);
@@ -55,13 +55,27 @@ namespace Weapon
 
         private Bullet GetBullet()
         {
-            Bullet bullet = _bulletsPool[_current++];
-            bullet.gameObject.SetActive(false);
+            int initialCurrent = _current;
 
-            if (_current == _poolSize)
+            Bullet bullet = _bulletsPool[_current];
+            _current = ++_current % _bulletsPool.Count;
+
+            if (bullet.IsFlying)
             {
-                _current = 0;
+                while (initialCurrent != _current)
+                {
+                    bullet = _bulletsPool[_current].IsFlying ? null : _bulletsPool[_current];
+                    _current = ++_current % _bulletsPool.Count;
+                }
             }
+
+            if (!bullet || bullet.IsFlying)
+            {
+                bullet = Instantiate(_bullet, _bulletsContainer.transform, true);
+                _bulletsPool.Add(bullet);
+            }
+
+            bullet.gameObject.SetActive(false);
 
             return bullet;
         }
