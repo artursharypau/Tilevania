@@ -1,3 +1,4 @@
+using Common;
 using UnityEngine;
 
 namespace Enemy.MovementStates
@@ -45,7 +46,7 @@ namespace Enemy.MovementStates
         private void Attack()
         {
             Enemy.Anim.Play(Attacking);
-            Enemy.CurrentTarget.TakeDamage(1, Enemy.transform.position);
+            Enemy.CurrentTarget.TakeDamage(1, Enemy.gameObject);
             _nextAttackTime = Time.time + Enemy.AttackCooldown;
         }
     }

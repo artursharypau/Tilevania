@@ -1,3 +1,4 @@
+using Common;
 using UnityEngine;
 
 namespace Weapon
@@ -8,7 +9,6 @@ namespace Weapon
         [SerializeField] private float _rotationSpeed = 300f;
 
         private Vector2 _direction;
-        private LayerMask _targetLayerMask;
         private Rigidbody2D _rb;
 
         public bool IsFlying { get; private set; }
@@ -16,7 +16,6 @@ namespace Weapon
         private void Awake()
         {
             _direction = Vector2.zero;
-            _targetLayerMask = LayerMask.GetMask("Enemy");
             _rb = GetComponent<Rigidbody2D>();
         }
 
@@ -43,7 +42,7 @@ namespace Weapon
         {
             Stop();
 
-            if ((_targetLayerMask & (1 << other.gameObject.layer)) != 0)
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Enemy))
             {
                 gameObject.SetActive(false);
             }

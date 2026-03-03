@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Player
+namespace UI
 {
     public class HealthUI : MonoBehaviour
     {
@@ -10,19 +10,8 @@ namespace Player
         [SerializeField] private Sprite _emptyHeart;
         [SerializeField] private Sprite _halfHeart;
         [SerializeField] private Sprite _fullHeart;
-        [SerializeField] private HealthController _healthController;
 
-        private void OnEnable()
-        {
-            _healthController.OnHealthChanged.AddListener(UpdateHearts);
-        }
-
-        private void OnDisable()
-        {
-            _healthController.OnHealthChanged.RemoveListener(UpdateHearts);
-        }
-
-        private void UpdateHearts(int current)
+        public void UpdateHearts(int current)
         {
             for (int i = 0; i < _heartImages.Count; i++)
             {

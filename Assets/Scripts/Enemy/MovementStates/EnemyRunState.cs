@@ -1,3 +1,4 @@
+using Common;
 using UnityEngine;
 
 namespace Enemy.MovementStates
@@ -28,12 +29,12 @@ namespace Enemy.MovementStates
                 Enemy.LedgeCheck.position,
                 Vector2.down,
                 Enemy.RayDistance,
-                Enemy.GroundLayerMask);
+                LayerMaskProvider.Ground);
             RaycastHit2D wallInfo = Physics2D.Raycast(
                 Enemy.LedgeCheck.position,
                 Enemy.IsFacingRight() ? Vector2.right : Vector2.left,
                 Enemy.RayDistance,
-                Enemy.GroundLayerMask);
+                LayerMaskProvider.Ground);
 
             if (groundInfo.collider == false || wallInfo.collider == true)
             {

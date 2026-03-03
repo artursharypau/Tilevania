@@ -1,4 +1,5 @@
 using System.Collections;
+using Common;
 using Player.ActionStates;
 using Player.MovementStates;
 using UnityEngine;
@@ -20,13 +21,12 @@ namespace Player
         [SerializeField] private Tilemap _climbingTilemap;
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private float _groundCheckRadius = Mathf.Epsilon;
+        [SerializeField] private ParticleSystem _bloodParticles;
         [SerializeField] private Vector2 _deathKick = new(5f, 10f);
 
         private float _lastClimbTime;
-        private LayerMask _climbingLayerMask;
         private float _lastGroundedTime;
-        private LayerMask _groundLayerMask;
-        private HealthController _healthController;
+        private PlayerHealthController _healthController;
 
         public float RunSpeed => _runSpeed;
         public float ClimbSpeed => _climbSpeed;
@@ -52,10 +52,8 @@ namespace Player
         private void Awake()
         {
             _lastClimbTime = 0f;
-            _climbingLayerMask = LayerMask.GetMask("Climbing");
             _lastGroundedTime = 0f;
-            _groundLayerMask = LayerMask.GetMask("Ground", "Bouncing");
-            _healthController = GetComponent<HealthController>();
+            _healthController = GetComponent<PlayerHealthController>();
 
             RB = GetComponent<Rigidbody2D>();
             Anim = GetComponent<Animator>();
@@ -83,11 +81,13 @@ namespace Player
 
         private void OnEnable()
         {
+            _healthController.OnDamageTook.AddListener(TakeDamage);
             _healthController.OnDeath.AddListener(Die);
         }
 
         private void OnDisable()
         {
+            _healthController.OnDamageTook.AddListener(TakeDamage);
             _healthController.OnDeath.RemoveListener(Die);
         }
 
@@ -110,7 +110,7 @@ namespace Player
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if ((_climbingLayerMask & (1 << other.gameObject.layer)) != 0)
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Climbing))
             {
                 Vector3Int cellPosition = _climbingTilemap.WorldToCell(transform.position);
                 CurrentClimbPosition = _climbingTilemap.GetCellCenterWorld(cellPosition);
@@ -119,7 +119,7 @@ namespace Player
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if ((_climbingLayerMask & (1 << other.gameObject.layer)) != 0)
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Climbing))
             {
                 CurrentClimbPosition = Vector2.zero;
             }
@@ -150,17 +150,30 @@ namespace Player
         {
             return Mathf.Abs(RB.linearVelocity.y) > 0.1f
                 ? false
-                : Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayerMask);
+                : Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, LayerMaskProvider.Ground);
         }
 
-        private void Die(Vector2 position)
+        private void TakeDamage()
+        {
+            _bloodParticles.Play(true);
+        }
+
+        private void Die(GameObject other)
         {
             enabled = false;
-            gameObject.layer = LayerMask.NameToLayer("DeadPlayer");
+            gameObject.layer = LayerMaskProvider.MaskToLayer(LayerMaskProvider.DeadPlayer);
 
-            float enemyDirectionX = transform.position.x - position.x;
-            float deathKickDirectionX = enemyDirectionX > 0 ? 1 : -1;
-            RB.linearVelocity = new Vector2(deathKickDirectionX * _deathKick.x, _deathKick.y);
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Enemy))
+            {
+                float enemyDirectionX = transform.position.x - other.transform.position.x;
+                float deathKickDirectionX = enemyDirectionX > 0 ? 1 : -1;
+                RB.linearVelocity = new Vector2(deathKickDirectionX * _deathKick.x, _deathKick.y);
+            }
+            else
+            {
+                RB.gravityScale = 0.2f;
+                RB.linearDamping = 5f;
+            }
 
             Anim.SetTrigger(Dying);
             StartCoroutine(FinalizeDeathRoutine());
@@ -173,7 +186,6 @@ namespace Player
                 yield return null;
             }
 
-            RB.linearVelocity = Vector2.zero;
             RB.simulated = false;
         }
     }

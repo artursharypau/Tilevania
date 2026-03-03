@@ -1,3 +1,4 @@
+using Common;
 using Enemy.MovementStates;
 using Player;
 using UnityEngine;
@@ -14,9 +15,6 @@ namespace Enemy
         [SerializeField] private ushort _healthPoints = 3;
         [SerializeField] private ParticleSystem _bloodParticles;
 
-        private LayerMask _playerLayerMask;
-        private LayerMask _bulletLayerMask;
-
         public float IdleTime => _idleTime;
         public float RunSpeed => _runSpeed;
         public float RayDistance => _rayDistance;
@@ -24,7 +22,6 @@ namespace Enemy
         public float AttackCooldown => _attackCooldown;
 
         public bool ShouldAttack { get; private set; }
-        public LayerMask GroundLayerMask { get; private set; }
         public Rigidbody2D RB { get; private set; }
         public Animator Anim { get; private set; }
 
@@ -33,15 +30,11 @@ namespace Enemy
         public EnemyRunState RunState { get; private set; }
         public EnemyAttackState AttackState { get; private set; }
 
-        public HealthController CurrentTarget { get; private set; }
+        public PlayerHealthController CurrentTarget { get; private set; }
 
         private void Awake()
         {
-            _playerLayerMask = LayerMask.GetMask("Player", "DeadPlayer");
-            _bulletLayerMask = LayerMask.GetMask("Bullet");
-
             ShouldAttack = false;
-            GroundLayerMask = LayerMask.GetMask("Ground", "Bouncing");
             RB = GetComponent<Rigidbody2D>();
             Anim = GetComponent<Animator>();
 
@@ -70,16 +63,16 @@ namespace Enemy
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if ((_playerLayerMask & (1 << other.gameObject.layer)) != 0)
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Player))
             {
                 ShouldAttack = true;
-                CurrentTarget = other.GetComponent<HealthController>();
+                CurrentTarget = other.GetComponent<PlayerHealthController>();
             }
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if ((_playerLayerMask & (1 << other.gameObject.layer)) != 0)
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Player, LayerMaskProvider.DeadPlayer))
             {
                 ShouldAttack = false;
                 CurrentTarget = null;
@@ -88,7 +81,7 @@ namespace Enemy
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if ((_bulletLayerMask & (1 << other.gameObject.layer)) != 0)
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Bullet))
             {
                 --_healthPoints;
                 _bloodParticles.Play(true);
