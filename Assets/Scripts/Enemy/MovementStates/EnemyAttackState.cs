@@ -25,8 +25,6 @@ namespace Enemy.MovementStates
             {
                 _spriteFlipper.CheckFlip(-Enemy.transform.localScale.x, Enemy.transform);
             }
-
-            Attack();
         }
 
         public override void Update()
@@ -45,7 +43,7 @@ namespace Enemy.MovementStates
 
         private void Attack()
         {
-            Enemy.Anim.Play(Attacking);
+            Enemy.Anim.SetTrigger(Attacking);
             Enemy.CurrentTarget.TakeDamage(1, Enemy.gameObject);
             _nextAttackTime = Time.time + Enemy.AttackCooldown;
         }

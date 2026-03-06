@@ -48,7 +48,7 @@ namespace Enemy
 
         private void Start()
         {
-            MovementFsm.Initialize(RunState);
+            MovementFsm.Initialize(IdleState);
         }
 
         private void Update()
@@ -65,8 +65,17 @@ namespace Enemy
         {
             if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Player))
             {
-                ShouldAttack = true;
-                CurrentTarget = other.GetComponent<PlayerHealthController>();
+                PlayerLegs playerLegs = other.GetComponentInChildren<PlayerLegs>();
+                if (playerLegs && playerLegs.IsOnTheLayer(LayerMaskProvider.Enemy))
+                {
+                    _bloodParticles.Play(true);
+                    Die();
+                }
+                else
+                {
+                    ShouldAttack = true;
+                    CurrentTarget = other.GetComponent<PlayerHealthController>();
+                }
             }
         }
 
@@ -88,9 +97,7 @@ namespace Enemy
 
                 if (_healthPoints == 0)
                 {
-                    enabled = false;
-
-                    Destroy(gameObject, _bloodParticles.main.duration);
+                    Die();
                 }
             }
         }
@@ -108,6 +115,12 @@ namespace Enemy
         public bool IsFacingRight()
         {
             return transform.localScale.x > 0;
+        }
+
+        private void Die()
+        {
+            enabled = false;
+            Destroy(gameObject, _bloodParticles.main.duration);
         }
     }
 }

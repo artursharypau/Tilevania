@@ -8,11 +8,11 @@ namespace Player
     {
         [SerializeField] private HealthUI _ui;
 
-        private const int Max = 10;
+        private const int Max = 6;
 
         public int Current { get; private set; }
         public UnityEvent<GameObject> OnDeath { get; } = new();
-        public UnityEvent OnDamageTook { get; } = new();
+        public UnityEvent<GameObject> OnDamageTook { get; } = new();
 
         public void Start()
         {
@@ -27,7 +27,7 @@ namespace Player
             Current = Mathf.Clamp(Current, 0, Max);
 
             _ui.UpdateHearts(Current);
-            OnDamageTook.Invoke();
+            OnDamageTook.Invoke(other);
 
             if (Current == 0)
             {

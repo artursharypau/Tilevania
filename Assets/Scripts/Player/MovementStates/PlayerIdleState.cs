@@ -11,7 +11,7 @@ namespace Player.MovementStates
 
         public override void Enter()
         {
-            Player.RB.linearVelocity = new Vector2(0f, Player.RB.linearVelocity.y);
+            Player.RB.linearVelocityX = 0f;
         }
 
         public override void Update()

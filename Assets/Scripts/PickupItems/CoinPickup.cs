@@ -7,12 +7,15 @@ namespace PickupItems
     public class CoinPickup : MonoBehaviour
     {
         [SerializeField] private CoinPickupUI _ui;
+        [SerializeField] private AudioClip _sfx;
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Player))
             {
                 _ui.UpdateCount(100);
+                AudioSource.PlayClipAtPoint(_sfx, transform.position);
+
                 Destroy(gameObject);
             }
         }

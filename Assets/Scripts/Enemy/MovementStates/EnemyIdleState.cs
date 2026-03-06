@@ -27,7 +27,6 @@ namespace Enemy.MovementStates
             if (Enemy.ShouldAttack)
             {
                 FSM.ChangeState(Enemy.AttackState);
-                return;
             }
 
             _timer -= Time.deltaTime;

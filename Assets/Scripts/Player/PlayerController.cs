@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Common;
 using Player.ActionStates;
@@ -19,14 +20,16 @@ namespace Player
         [SerializeField] private float _climbSpeed = 5f;
         [SerializeField] private float _climbBlockTime = 1f;
         [SerializeField] private Tilemap _climbingTilemap;
-        [SerializeField] private Transform _groundCheck;
-        [SerializeField] private float _groundCheckRadius = Mathf.Epsilon;
+        [SerializeField] private Vector2 _knockbackForce = new(3f, 8f);
+        [SerializeField] private float _knockbackTime = 0.5f;
         [SerializeField] private ParticleSystem _bloodParticles;
-        [SerializeField] private Vector2 _deathKick = new(5f, 10f);
 
+        private bool _canMove;
         private float _lastClimbTime;
         private float _lastGroundedTime;
         private PlayerHealthController _healthController;
+        private PlayerLegs _legs;
+        private WaitForSeconds _knockbackRoutine;
 
         public float RunSpeed => _runSpeed;
         public float ClimbSpeed => _climbSpeed;
@@ -51,9 +54,12 @@ namespace Player
 
         private void Awake()
         {
+            _canMove = true;
             _lastClimbTime = 0f;
             _lastGroundedTime = 0f;
             _healthController = GetComponent<PlayerHealthController>();
+            _legs = GetComponentInChildren<PlayerLegs>();
+            _knockbackRoutine = new WaitForSeconds(_knockbackTime);
 
             RB = GetComponent<Rigidbody2D>();
             Anim = GetComponent<Animator>();
@@ -93,18 +99,29 @@ namespace Player
 
         private void Update()
         {
-            MovementFSM.Update();
-            ActionFSM.Update();
+            if (_canMove)
+            {
+                MovementFSM.Update();
+                ActionFSM.Update();
+            }
         }
 
         private void FixedUpdate()
         {
-            MovementFSM.FixedUpdate();
-            ActionFSM.FixedUpdate();
+            if (_canMove)
+            {
+                MovementFSM.FixedUpdate();
+                ActionFSM.FixedUpdate();
+            }
 
             if (IsGrounded())
             {
                 _lastGroundedTime = Time.time;
+
+                if (Mathf.Abs(Input.MoveInput.x) < Mathf.Epsilon && MathF.Abs(RB.linearVelocityX) > 0.1f)
+                {
+                    RB.linearVelocityX = 0f;
+                }
             }
         }
 
@@ -115,6 +132,11 @@ namespace Player
                 Vector3Int cellPosition = _climbingTilemap.WorldToCell(transform.position);
                 CurrentClimbPosition = _climbingTilemap.GetCellCenterWorld(cellPosition);
             }
+            else if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Enemy)
+                     && _legs.IsOnTheLayer(LayerMaskProvider.Enemy))
+            {
+                Knockback(other.gameObject, false);
+            }
         }
 
         private void OnTriggerExit2D(Collider2D other)
@@ -123,12 +145,6 @@ namespace Player
             {
                 CurrentClimbPosition = Vector2.zero;
             }
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
         }
 
         public bool CanJumpCoyote()
@@ -148,14 +164,35 @@ namespace Player
 
         public bool IsGrounded()
         {
-            return Mathf.Abs(RB.linearVelocity.y) > 0.1f
-                ? false
-                : Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, LayerMaskProvider.Ground);
+            return !(Mathf.Abs(RB.linearVelocityY) > 0.1f) && _legs.IsOnTheLayer(LayerMaskProvider.Ground);
         }
 
-        private void TakeDamage()
+        private void TakeDamage(GameObject other)
         {
-            _bloodParticles.Play(true);
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Enemy))
+            {
+                Knockback(other);
+            }
+        }
+
+        private void Knockback(GameObject other, bool disableMovement = true)
+        {
+            float otherDirectionX = transform.position.x - other.transform.position.x;
+            float knockbackDirectionX = otherDirectionX > 0 ? 1 : -1;
+            RB.linearVelocity = new Vector2(knockbackDirectionX * _knockbackForce.x, _knockbackForce.y);
+
+            if (disableMovement)
+            {
+                _canMove = false;
+                StartCoroutine(KnockbackRoutine());
+            }
+        }
+
+        private IEnumerator KnockbackRoutine()
+        {
+            yield return _knockbackRoutine;
+
+            _canMove = true;
         }
 
         private void Die(GameObject other)
@@ -163,16 +200,15 @@ namespace Player
             enabled = false;
             gameObject.layer = LayerMaskProvider.MaskToLayer(LayerMaskProvider.DeadPlayer);
 
-            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Enemy))
-            {
-                float enemyDirectionX = transform.position.x - other.transform.position.x;
-                float deathKickDirectionX = enemyDirectionX > 0 ? 1 : -1;
-                RB.linearVelocity = new Vector2(deathKickDirectionX * _deathKick.x, _deathKick.y);
-            }
-            else
+            if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Water))
             {
                 RB.gravityScale = 0.2f;
                 RB.linearDamping = 5f;
+            }
+
+            if (!LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Water))
+            {
+                _bloodParticles.Play(true);
             }
 
             Anim.SetTrigger(Dying);

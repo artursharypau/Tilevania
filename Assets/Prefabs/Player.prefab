@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4892921351528477136}
+  - component: {fileID: 3888715113534084618}
   m_Layer: 10
-  m_Name: GroundCheck
+  m_Name: Legs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,6 +32,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5270804568738885631}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3888715113534084618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 366189975916703275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40011c89ca3345d3ac66b91a98fd0ce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerLegs
+  _checkRadius: 0.1
 --- !u!1 &1994620406841295348
 GameObject:
   m_ObjectHideFlags: 0
@@ -5319,10 +5333,8 @@ MonoBehaviour:
   _climbSpeed: 5
   _climbBlockTime: 1
   _climbingTilemap: {fileID: 0}
-  _groundCheck: {fileID: 4892921351528477136}
-  _groundCheckRadius: 0.1
+  _knockbackForce: {x: 3, y: 8}
   _bloodParticles: {fileID: 2433882603023345254}
-  _deathKick: {x: 3, y: 7}
 --- !u!114 &7946556303183531102
 MonoBehaviour:
   m_ObjectHideFlags: 0

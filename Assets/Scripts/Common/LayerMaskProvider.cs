@@ -8,9 +8,10 @@ namespace Common
         public static LayerMask DeadPlayer = LayerMask.GetMask("DeadPlayer");
         public static LayerMask Bullet = LayerMask.GetMask("Bullet");
         public static LayerMask Climbing = LayerMask.GetMask("Climbing");
-        public static LayerMask Hazards = LayerMask.GetMask("Hazards");
+        public static LayerMask Hazards = LayerMask.GetMask("Water", "Hazards");
         public static LayerMask Enemy = LayerMask.GetMask("Enemy");
         public static LayerMask Ground = LayerMask.GetMask("Ground", "Bouncing");
+        public static LayerMask Water = LayerMask.GetMask("Water");
 
         public static bool Contains(int objectLayer, params LayerMask[] masks)
         {
