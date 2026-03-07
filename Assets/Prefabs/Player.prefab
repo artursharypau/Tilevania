@@ -5155,8 +5155,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.053788185, y: -0.0661993}
-  m_Size: {x: 0.62786865, y: 0.87099075}
+  m_Offset: {x: -0.03209114, y: -0.0661993}
+  m_Size: {x: 0.4415264, y: 0.87099075}
   m_Direction: 0
 --- !u!114 &829568132265377353
 MonoBehaviour:
@@ -5334,6 +5334,7 @@ MonoBehaviour:
   _climbBlockTime: 1
   _climbingTilemap: {fileID: 0}
   _knockbackForce: {x: 3, y: 8}
+  _knockbackTime: 0.5
   _bloodParticles: {fileID: 2433882603023345254}
 --- !u!114 &7946556303183531102
 MonoBehaviour:
