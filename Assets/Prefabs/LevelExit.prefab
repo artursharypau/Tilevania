@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5847233282246501459}
   - component: {fileID: 415702905324964584}
   - component: {fileID: 9150040301751569628}
-  - component: {fileID: 5328407490783126781}
+  - component: {fileID: 577390736448059917}
   m_Layer: 0
   m_Name: LevelExit
   m_TagString: Untagged
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 0beb505f6b2ea49dc8bba0c1d5b50a7b, type: 3}
-  m_Color: {r: 0.28235295, g: 0.33333334, b: 0.28627452, a: 1}
+  m_Color: {r: 0.23131008, g: 0.4339623, b: 0.24689873, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -139,30 +139,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.8602419, y: 1.28}
   m_EdgeRadius: 0
---- !u!50 &5328407490783126781
-Rigidbody2D:
-  serializedVersion: 5
+--- !u!114 &577390736448059917
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6326470450481301950}
-  m_BodyType: 2
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df49c077d525d4ad6b5f466d939ff785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelExit

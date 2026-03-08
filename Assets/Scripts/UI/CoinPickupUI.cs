@@ -7,17 +7,15 @@ namespace UI
     {
         [SerializeField] private TextMeshProUGUI _scoreText;
 
-        private uint _count;
-
         private void Start()
         {
-            _scoreText.SetText(_count.ToString());
+            GameSession session = FindFirstObjectByType<GameSession>();
+            UpdateUI(session ? session.CollectedCoins : 0);
         }
 
-        public void UpdateCount(uint count)
+        public void UpdateUI(uint count)
         {
-            _count += count;
-            _scoreText.SetText(_count.ToString());
+            _scoreText.SetText(count.ToString());
         }
     }
 }

@@ -4,6 +4,7 @@ using Common;
 using Player.ActionStates;
 using Player.MovementStates;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 using Weapon;
 
@@ -24,7 +25,7 @@ namespace Player
         [SerializeField] private float _knockbackTime = 0.5f;
         [SerializeField] private ParticleSystem _bloodParticles;
 
-        private bool _canMove;
+        private bool _canMove = true;
         private float _lastClimbTime;
         private float _lastGroundedTime;
         private PlayerHealthController _healthController;
@@ -35,7 +36,9 @@ namespace Player
         public float ClimbSpeed => _climbSpeed;
         public float JumpForce => _jumpForce;
         public ushort AvailableJumpCount => _availableJumpCount;
-        public Vector2 CurrentClimbPosition { get; private set; } = Vector3.zero;
+
+        public Vector2 CurrentClimbPosition { get; private set; } = Vector2.zero;
+        public uint Coins { get; private set; }
 
         public Rigidbody2D RB { get; private set; }
         public Animator Anim { get; private set; }
@@ -49,14 +52,13 @@ namespace Player
         public PlayerClimbState ClimbState { get; private set; }
 
         public PlayerStateMachine ActionFSM { get; private set; }
-        public PlayerNoneState NoneState { get; set; }
-        public PlayerAttackState AttackState { get; set; }
+        public PlayerNoneState NoneState { get; private set; }
+        public PlayerAttackState AttackState { get; private set; }
+
+        public UnityEvent Died { get; } = new();
 
         private void Awake()
         {
-            _canMove = true;
-            _lastClimbTime = 0f;
-            _lastGroundedTime = 0f;
             _healthController = GetComponent<PlayerHealthController>();
             _legs = GetComponentInChildren<PlayerLegs>();
             _knockbackRoutine = new WaitForSeconds(_knockbackTime);
@@ -93,7 +95,7 @@ namespace Player
 
         private void OnDisable()
         {
-            _healthController.OnDamageTook.AddListener(TakeDamage);
+            _healthController.OnDamageTook.RemoveListener(TakeDamage);
             _healthController.OnDeath.RemoveListener(Die);
         }
 
@@ -167,6 +169,11 @@ namespace Player
             return !(Mathf.Abs(RB.linearVelocityY) > 0.1f) && _legs.IsOnTheLayer(LayerMaskProvider.Ground);
         }
 
+        public void AddCoins(uint count)
+        {
+            Coins += count;
+        }
+
         private void TakeDamage(GameObject other)
         {
             if (LayerMaskProvider.Contains(other.gameObject.layer, LayerMaskProvider.Enemy))
@@ -223,6 +230,7 @@ namespace Player
             }
 
             RB.simulated = false;
+            Died.Invoke();
         }
     }
 }
