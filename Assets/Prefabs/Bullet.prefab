@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.7644916, y: 7.2642016, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -81,15 +81,15 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -38817405
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: bf01648f409ab49f4af99b629c4c22c5, type: 3}
+  m_Sprite: {fileID: 2281616994717487372, guid: 52be426ace3b747c9bffeb27c16b5203, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.8125, y: 2.03125}
+  m_Size: {x: 0.625, y: 0.625}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -155,8 +155,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: 0.0027757883, y: 0}
+  m_Radius: 0.15309751
 --- !u!114 &6310658664811468817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,5 +169,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e90391d6e84779b78600376efea219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon.Bullet
-  _speed: 15
-  _rotationSpeed: 300
+  _speed: 13
+  _rotationSpeed: 500
